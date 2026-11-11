@@ -1,0 +1,78 @@
+enclave {
+    trusted {
+
+        public int ecall_obrm_load_index_cache(
+            [in, count=blocks_len] const uint8_t* blocks,
+            size_t blocks_len,
+            size_t block_count,
+            size_t dim);
+        public int ecall_obrm_init_external_oram(
+            size_t oram_kind,
+            size_t block_count,
+            size_t dim,
+            size_t plain_block_capacity);
+        public int ecall_obrm_stage_initial_block(
+            size_t oram_kind,
+            [in, count=block_len] const uint8_t* block,
+            size_t block_len);
+        public int ecall_obrm_finish_initialization(size_t oram_kind);
+        public int ecall_obrm_query_loaded(
+            [in, count=coordinate_bytes] const uint8_t* coordinates,
+            size_t coordinate_bytes,
+            uint32_t encoding,
+            size_t query_len,
+            size_t r,
+            [out, count=result_len] int* results,
+            size_t result_len);
+
+        public int ecall_obrm_query_optimized_loaded(
+            [in, count=coordinate_bytes] const uint8_t* coordinates,
+            size_t coordinate_bytes,
+            uint32_t encoding,
+            size_t query_len,
+            size_t r,
+            [out, count=result_len] int* results,
+            size_t result_len);
+
+        public int ecall_obrm_get_oram_stats_by_kind(
+            size_t oram_kind,
+            [out, count=stats_len] uint8_t* stats,
+            size_t stats_len);
+
+    };
+
+    untrusted {
+        void ocall_print_string([in, string] const char* str);
+        void ocall_oram_path_size(
+            uint32_t oram_kind,
+            uint32_t leaf,
+            [out] size_t* path_bytes);
+        void ocall_oram_read_path(
+            uint32_t oram_kind,
+            uint32_t leaf,
+            [out, count=buffer_len] uint8_t* buffer,
+            size_t buffer_len,
+            [out] size_t* written);
+        void ocall_oram_write_path(
+            uint32_t oram_kind,
+            uint32_t leaf,
+            [in, count=buffer_len] const uint8_t* buffer,
+            size_t buffer_len,
+            [out] size_t* written);
+
+        void ocall_oram_read_nodes(
+            uint32_t oram_kind,
+            [in, count=node_count] const uint32_t* nodes,
+            size_t node_count,
+            [out, count=buffer_len] uint8_t* buffer,
+            size_t buffer_len,
+            [out] size_t* written);
+        void ocall_oram_write_nodes(
+            uint32_t oram_kind,
+            [in, count=node_count] const uint32_t* nodes,
+            size_t node_count,
+            [in, count=buffer_len] const uint8_t* buffer,
+            size_t buffer_len,
+            [out] size_t* written);
+    };
+};
